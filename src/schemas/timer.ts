@@ -6,7 +6,7 @@ export interface ITimerAttributes {
   timerIsoString: string;
   timerRule: string;
   eventName: string;
-  lastElapsed: Date;
+  lastElapsed?: Date;
 }
 
 export type Timer = Sequelize.Instance<ITimerAttributes> & ITimerAttributes;
@@ -20,7 +20,6 @@ export function defineTimer(sequelize: Sequelize.Sequelize): any {
     },
     timerType: {
       type: Sequelize.NUMBER,
-      unique: true,
       allowNull: false,
     },
     timerIsoString: {
@@ -37,7 +36,8 @@ export function defineTimer(sequelize: Sequelize.Sequelize): any {
     },
     lastElapsed: {
       type: Sequelize.DATE,
-      allowNull: false,
+      allowNull: true,
+      defaultValue: undefined,
     },
   };
 
