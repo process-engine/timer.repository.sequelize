@@ -72,6 +72,23 @@ export class TimerRepository implements ITimerRepository {
     });
   }
 
+  public async setLastElapsedById(timerId: string, lastElapsed: Date): Promise<void> {
+
+    const matchingTimer: TimerModel = await this.timerModel.findOne({
+      where: {
+        id: timerId,
+      },
+    });
+
+    if (!matchingTimer) {
+      throw new Error(`timer with id '${timerId}' not found!`);
+    }
+
+    matchingTimer.lastElapsed = lastElapsed;
+
+    matchingTimer.save();
+  }
+
   private _convertToTimerRuntimeObject(dataModel: TimerModel): Runtime.Types.Timer {
 
     const timer: Runtime.Types.Timer = new Runtime.Types.Timer();
