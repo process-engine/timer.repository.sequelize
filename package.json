@@ -16,6 +16,7 @@
     "@essential-projects/sequelize_connection_manager": "^1.0.0",
     "@process-engine/process_engine_contracts": "feature~remove_old_datastore_implementation",
     "loggerhythm": "^3.0.3",
+    "moment": "^2.22.2",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.38.0"

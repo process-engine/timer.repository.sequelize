@@ -7,6 +7,8 @@ import * as Sequelize from 'sequelize';
 import {loadModels} from './model_loader';
 import {ITimerAttributes, Timer as TimerModel} from './schemas';
 
+import * as moment from 'moment';
+
 export class TimerRepository implements ITimerRepository {
 
   public config: Sequelize.Options;
@@ -52,9 +54,9 @@ export class TimerRepository implements ITimerRepository {
   public async create(timerToStore: Runtime.Types.Timer): Promise<string> {
 
     const createParams: any = {
-      timerType: timerToStore.timerType,
-      timerIsoString: timerToStore.timerIsoString,
-      timerRule: JSON.stringify(timerToStore.timerRule),
+      type: timerToStore.type,
+      expirationDate: timerToStore.expirationDate.toDate(),
+      rule: JSON.stringify(timerToStore.rule),
       eventName: timerToStore.eventName,
       lastElapsed: timerToStore.lastElapsed,
     };
@@ -93,9 +95,9 @@ export class TimerRepository implements ITimerRepository {
 
     const timer: Runtime.Types.Timer = new Runtime.Types.Timer();
     timer.id = dataModel.id;
-    timer.timerType = dataModel.timerType;
-    timer.timerIsoString = dataModel.timerIsoString;
-    timer.timerRule = JSON.parse(dataModel.timerRule);
+    timer.type = dataModel.type;
+    timer.expirationDate = moment(dataModel.expirationDate);
+    timer.rule = JSON.parse(dataModel.rule);
     timer.eventName = dataModel.eventName;
     timer.lastElapsed = dataModel.lastElapsed;
 

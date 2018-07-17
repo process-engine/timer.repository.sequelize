@@ -2,9 +2,9 @@ import * as Sequelize from 'sequelize';
 
 export interface ITimerAttributes {
   id: string;
-  timerType: number;
-  timerIsoString: string;
-  timerRule: string;
+  type: number;
+  expirationDate?: Date; // Only used, if timer type is "once"
+  rule?: string; // Only used, if timer type is "periodic"
   eventName: string;
   lastElapsed?: Date;
 }
@@ -18,17 +18,17 @@ export function defineTimer(sequelize: Sequelize.Sequelize): any {
       primaryKey: true,
       defaultValue: Sequelize.UUIDV4,
     },
-    timerType: {
+    type: {
       type: Sequelize.NUMBER,
       allowNull: false,
     },
-    timerIsoString: {
-      type: Sequelize.STRING,
-      allowNull: false,
+    expirationDate: {
+      type: Sequelize.DATE,
+      allowNull: true,
     },
-    timerRule: {
+    rule: {
       type: Sequelize.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     eventName: {
       type: Sequelize.STRING,
