@@ -19,7 +19,7 @@ export function defineTimer(sequelize: Sequelize.Sequelize): any {
       defaultValue: Sequelize.UUIDV4,
     },
     type: {
-      type: Sequelize.NUMBER,
+      type: Sequelize.INTEGER,
       allowNull: false,
     },
     expirationDate: {
@@ -37,7 +37,6 @@ export function defineTimer(sequelize: Sequelize.Sequelize): any {
     lastElapsed: {
       type: Sequelize.DATE,
       allowNull: true,
-      defaultValue: undefined,
     },
   };
 
