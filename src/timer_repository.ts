@@ -55,8 +55,8 @@ export class TimerRepository implements ITimerRepository {
 
     const createParams: any = {
       type: timerToStore.type,
-      expirationDate: timerToStore.expirationDate.toDate(),
-      rule: JSON.stringify(timerToStore.rule),
+      expirationDate: timerToStore.expirationDate ? timerToStore.expirationDate.toDate() : null,
+      rule: timerToStore.rule ? JSON.stringify(timerToStore.rule): null,
       eventName: timerToStore.eventName,
       lastElapsed: timerToStore.lastElapsed,
     };
@@ -96,8 +96,8 @@ export class TimerRepository implements ITimerRepository {
     const timer: Runtime.Types.Timer = new Runtime.Types.Timer();
     timer.id = dataModel.id;
     timer.type = dataModel.type;
-    timer.expirationDate = moment(dataModel.expirationDate);
-    timer.rule = JSON.parse(dataModel.rule);
+    timer.expirationDate = dataModel.expirationDate ? moment(dataModel.expirationDate) : undefined;
+    timer.rule = dataModel.rule ? JSON.parse(dataModel.rule) : undefined;
     timer.eventName = dataModel.eventName;
     timer.lastElapsed = dataModel.lastElapsed;
 
