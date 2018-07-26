@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "https://www.npmjs.com"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Uses sequelize to access and manipulate timers.",
   "license": "MIT",
   "main": "dist/commonjs/index.js",
@@ -13,7 +13,7 @@
     "Christian Werner <christian.werner@5minds.de>"
   ],
   "dependencies": {
-    "@essential-projects/sequelize_connection_manager": "^1.0.0",
+    "@essential-projects/sequelize_connection_manager": "^1.0.1",
     "@process-engine/process_engine_contracts": "^16.0.0",
     "loggerhythm": "^3.0.3",
     "moment": "^2.22.2",
