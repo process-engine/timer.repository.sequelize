@@ -14,7 +14,7 @@
   ],
   "dependencies": {
     "@essential-projects/sequelize_connection_manager": "^1.0.1",
-    "@process-engine/process_engine_contracts": "^16.0.0",
+    "@essential-projects/timing_contracts": "^3.0.0",
     "loggerhythm": "^3.0.3",
     "moment": "^2.22.2",
     "pg": "^7.4.3",
