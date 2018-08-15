@@ -1,4 +1,4 @@
-import {ITimerRepository, Runtime} from '@process-engine/process_engine_contracts';
+import {ITimerRepository, Timer} from '@essential-projects/timing_contracts';
 
 import {getConnection} from '@essential-projects/sequelize_connection_manager';
 
@@ -26,15 +26,15 @@ export class TimerRepository implements ITimerRepository {
     this._timerModel = await loadModels(this.sequelize);
   }
 
-  public async getAll(): Promise<Array<Runtime.Types.Timer>> {
+  public async getAll(): Promise<Array<Timer>> {
 
     const result: Array<TimerModel> = await this.timerModel.findAll();
-    const runtimeProcessDefinitions: Array<Runtime.Types.Timer> = result.map(this._convertToTimerRuntimeObject);
+    const runtimeProcessDefinitions: Array<Timer> = result.map(this._convertToTimerRuntimeObject);
 
     return runtimeProcessDefinitions;
   }
 
-  public async getById(timerId: string): Promise<Runtime.Types.Timer> {
+  public async getById(timerId: string): Promise<Timer> {
 
     const matchingTimer: TimerModel = await this.timerModel.findOne({
       where: {
@@ -46,12 +46,12 @@ export class TimerRepository implements ITimerRepository {
       throw new Error(`timer with id '${timerId}' not found!`);
     }
 
-    const timerRuntimeObject: Runtime.Types.Timer = this._convertToTimerRuntimeObject(matchingTimer);
+    const timerRuntimeObject: Timer = this._convertToTimerRuntimeObject(matchingTimer);
 
     return timerRuntimeObject;
   }
 
-  public async create(timerToStore: Runtime.Types.Timer): Promise<string> {
+  public async create(timerToStore: Timer): Promise<string> {
 
     const createParams: any = {
       type: timerToStore.type,
@@ -91,9 +91,9 @@ export class TimerRepository implements ITimerRepository {
     matchingTimer.save();
   }
 
-  private _convertToTimerRuntimeObject(dataModel: TimerModel): Runtime.Types.Timer {
+  private _convertToTimerRuntimeObject(dataModel: TimerModel): Timer {
 
-    const timer: Runtime.Types.Timer = new Runtime.Types.Timer();
+    const timer: Timer = new Timer();
     timer.id = dataModel.id;
     timer.type = dataModel.type;
     timer.expirationDate = dataModel.expirationDate ? moment(dataModel.expirationDate) : undefined;
