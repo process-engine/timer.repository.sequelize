@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "https://www.npmjs.com"
   },
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Uses sequelize to access and manipulate timers.",
   "license": "MIT",
   "main": "dist/commonjs/index.js",
@@ -13,9 +13,9 @@
     "Christian Werner <christian.werner@5minds.de>"
   ],
   "dependencies": {
-    "@essential-projects/sequelize_connection_manager": "1.0.5",
-    "@essential-projects/timing_contracts": "3.0.0",
-    "@process-engine/process_engine_contracts": "26.0.0",
+    "@essential-projects/sequelize_connection_manager": "1.0.6",
+    "@essential-projects/timing_contracts": "3.0.1",
+    "@process-engine/process_engine_contracts": "27.0.0",
     "loggerhythm": "3.0.3",
     "moment": "2.22.2",
     "sequelize": "4.38.0"
@@ -28,7 +28,7 @@
     "gulptraum": "2.3.0",
     "gulptraum-typescript": "1.5.0",
     "tsconfig": "7.0.0",
-    "tslint": "5.10.0",
+    "tslint": "5.11.0",
     "typescript": "2.8.3"
   },
   "scripts": {
