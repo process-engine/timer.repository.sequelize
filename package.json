@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "https://www.npmjs.com"
   },
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Uses sequelize to access and manipulate timers.",
   "license": "MIT",
   "main": "dist/commonjs/index.js",
@@ -15,7 +15,7 @@
   "dependencies": {
     "@essential-projects/sequelize_connection_manager": "~1.1.0",
     "@essential-projects/timing_contracts": "~3.1.0",
-    "@process-engine/process_engine_contracts": "~30.1.0",
+    "@process-engine/process_engine_contracts": "~33.0.0",
     "loggerhythm": "3.0.3",
     "moment": "2.22.2",
     "sequelize": "4.38.0"
