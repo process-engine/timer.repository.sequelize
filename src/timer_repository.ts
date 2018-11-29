@@ -1,6 +1,6 @@
 import {ITimerRepository, Timer} from '@essential-projects/timing_contracts';
 
-import {getConnection} from '@essential-projects/sequelize_connection_manager';
+import {SequelizeConnectionManager} from '@essential-projects/sequelize_connection_manager';
 
 import * as Sequelize from 'sequelize';
 
@@ -14,16 +14,20 @@ export class TimerRepository implements ITimerRepository {
   public config: Sequelize.Options;
 
   private _timerModel: Sequelize.Model<TimerModel, ITimerAttributes>;
+  private _sequelize: Sequelize.Sequelize;
+  private _connectionManager: SequelizeConnectionManager;
 
-  private sequelize: Sequelize.Sequelize;
+  constructor(connectionManager: SequelizeConnectionManager) {
+    this._connectionManager = connectionManager;
+  }
 
   private get timerModel(): Sequelize.Model<TimerModel, ITimerAttributes> {
     return this._timerModel;
   }
 
   public async initialize(): Promise<void> {
-    this.sequelize = await getConnection(this.config);
-    this._timerModel = await loadModels(this.sequelize);
+    this._sequelize = await this._connectionManager.getConnection(this.config);
+    this._timerModel = await loadModels(this._sequelize);
   }
 
   public async getAll(): Promise<Array<Timer>> {
@@ -56,7 +60,7 @@ export class TimerRepository implements ITimerRepository {
     const createParams: any = {
       type: timerToStore.type,
       expirationDate: timerToStore.expirationDate ? timerToStore.expirationDate.toDate() : null,
-      rule: timerToStore.rule ? JSON.stringify(timerToStore.rule): null,
+      rule: timerToStore.rule ? JSON.stringify(timerToStore.rule) : null,
       eventName: timerToStore.eventName,
       lastElapsed: timerToStore.lastElapsed,
     };
