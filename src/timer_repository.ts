@@ -8,6 +8,7 @@ import {loadModels} from './model_loader';
 import {ITimerAttributes, Timer as TimerModel} from './schemas';
 
 import * as moment from 'moment';
+import * as uuid from 'uuid';
 
 export class TimerRepository implements ITimerRepository {
 
@@ -42,7 +43,7 @@ export class TimerRepository implements ITimerRepository {
 
     const matchingTimer: TimerModel = await this.timerModel.findOne({
       where: {
-        id: timerId,
+        timerId: timerId,
       },
     });
 
@@ -58,6 +59,7 @@ export class TimerRepository implements ITimerRepository {
   public async create(timerToStore: Timer): Promise<string> {
 
     const createParams: any = {
+      timerId: uuid.v4(),
       type: timerToStore.type,
       expirationDate: timerToStore.expirationDate ? timerToStore.expirationDate.toDate() : null,
       rule: timerToStore.rule ? JSON.stringify(timerToStore.rule) : null,
@@ -67,13 +69,13 @@ export class TimerRepository implements ITimerRepository {
 
     const result: TimerModel = await this.timerModel.create(createParams);
 
-    return result.id;
+    return result.timerId;
   }
 
   public async removeById(timerId: string): Promise<void> {
     await this.timerModel.destroy({
       where: {
-        id: timerId,
+        timerId: timerId,
       },
     });
   }
@@ -82,7 +84,7 @@ export class TimerRepository implements ITimerRepository {
 
     const matchingTimer: TimerModel = await this.timerModel.findOne({
       where: {
-        id: timerId,
+        timerId: timerId,
       },
     });
 
@@ -98,7 +100,7 @@ export class TimerRepository implements ITimerRepository {
   private _convertToTimerRuntimeObject(dataModel: TimerModel): Timer {
 
     const timer: Timer = new Timer();
-    timer.id = dataModel.id;
+    timer.id = dataModel.timerId;
     timer.type = dataModel.type;
     timer.expirationDate = dataModel.expirationDate ? moment(dataModel.expirationDate) : undefined;
     timer.rule = dataModel.rule ? JSON.parse(dataModel.rule) : undefined;

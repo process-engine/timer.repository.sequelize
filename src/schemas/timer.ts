@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 
 export interface ITimerAttributes {
-  id: string;
+  timerId: string;
   type: number;
   expirationDate?: Date; // Only used, if timer type is "once"
   rule?: string; // Only used, if timer type is "periodic"
@@ -13,10 +13,9 @@ export type Timer = Sequelize.Instance<ITimerAttributes> & ITimerAttributes;
 
 export function defineTimer(sequelize: Sequelize.Sequelize): any {
   const attributes: SequelizeAttributes<ITimerAttributes> = {
-    id: {
-      type: Sequelize.UUID,
-      primaryKey: true,
-      defaultValue: Sequelize.UUIDV4,
+    timerId: {
+      type: Sequelize.STRING,
+      allowNull: false,
     },
     type: {
       type: Sequelize.INTEGER,
