@@ -1,6 +1,6 @@
 import {ITimerRepository, Timer} from '@essential-projects/timing_contracts';
 
-import {getConnection} from '@essential-projects/sequelize_connection_manager';
+import {SequelizeConnectionManager} from '@essential-projects/sequelize_connection_manager';
 
 import * as Sequelize from 'sequelize';
 
@@ -8,22 +8,27 @@ import {loadModels} from './model_loader';
 import {ITimerAttributes, Timer as TimerModel} from './schemas';
 
 import * as moment from 'moment';
+import * as uuid from 'uuid';
 
 export class TimerRepository implements ITimerRepository {
 
   public config: Sequelize.Options;
 
   private _timerModel: Sequelize.Model<TimerModel, ITimerAttributes>;
+  private _sequelize: Sequelize.Sequelize;
+  private _connectionManager: SequelizeConnectionManager;
 
-  private sequelize: Sequelize.Sequelize;
+  constructor(connectionManager: SequelizeConnectionManager) {
+    this._connectionManager = connectionManager;
+  }
 
   private get timerModel(): Sequelize.Model<TimerModel, ITimerAttributes> {
     return this._timerModel;
   }
 
   public async initialize(): Promise<void> {
-    this.sequelize = await getConnection(this.config);
-    this._timerModel = await loadModels(this.sequelize);
+    this._sequelize = await this._connectionManager.getConnection(this.config);
+    this._timerModel = await loadModels(this._sequelize);
   }
 
   public async getAll(): Promise<Array<Timer>> {
@@ -38,7 +43,7 @@ export class TimerRepository implements ITimerRepository {
 
     const matchingTimer: TimerModel = await this.timerModel.findOne({
       where: {
-        id: timerId,
+        timerId: timerId,
       },
     });
 
@@ -54,22 +59,23 @@ export class TimerRepository implements ITimerRepository {
   public async create(timerToStore: Timer): Promise<string> {
 
     const createParams: any = {
+      timerId: uuid.v4(),
       type: timerToStore.type,
       expirationDate: timerToStore.expirationDate ? timerToStore.expirationDate.toDate() : null,
-      rule: timerToStore.rule ? JSON.stringify(timerToStore.rule): null,
+      rule: timerToStore.rule ? JSON.stringify(timerToStore.rule) : null,
       eventName: timerToStore.eventName,
       lastElapsed: timerToStore.lastElapsed,
     };
 
     const result: TimerModel = await this.timerModel.create(createParams);
 
-    return result.id;
+    return result.timerId;
   }
 
   public async removeById(timerId: string): Promise<void> {
     await this.timerModel.destroy({
       where: {
-        id: timerId,
+        timerId: timerId,
       },
     });
   }
@@ -78,7 +84,7 @@ export class TimerRepository implements ITimerRepository {
 
     const matchingTimer: TimerModel = await this.timerModel.findOne({
       where: {
-        id: timerId,
+        timerId: timerId,
       },
     });
 
@@ -94,7 +100,7 @@ export class TimerRepository implements ITimerRepository {
   private _convertToTimerRuntimeObject(dataModel: TimerModel): Timer {
 
     const timer: Timer = new Timer();
-    timer.id = dataModel.id;
+    timer.id = dataModel.timerId;
     timer.type = dataModel.type;
     timer.expirationDate = dataModel.expirationDate ? moment(dataModel.expirationDate) : undefined;
     timer.rule = dataModel.rule ? JSON.parse(dataModel.rule) : undefined;
