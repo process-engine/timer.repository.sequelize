@@ -1,16 +1,18 @@
-import {ITimerRepository, Timer} from '@essential-projects/timing_contracts';
-
-import {SequelizeConnectionManager} from '@essential-projects/sequelize_connection_manager';
-
+import {Logger} from 'loggerhythm';
+import * as moment from 'moment';
 import * as Sequelize from 'sequelize';
+import * as uuid from 'uuid';
+
+import {IDisposable} from '@essential-projects/bootstrapper_contracts';
+import {SequelizeConnectionManager} from '@essential-projects/sequelize_connection_manager';
+import {ITimerRepository, Timer} from '@essential-projects/timing_contracts';
 
 import {loadModels} from './model_loader';
 import {ITimerAttributes, Timer as TimerModel} from './schemas';
 
-import * as moment from 'moment';
-import * as uuid from 'uuid';
+const logger: Logger = new Logger('processengine:persistence:timer_repository');
 
-export class TimerRepository implements ITimerRepository {
+export class TimerRepository implements ITimerRepository, IDisposable {
 
   public config: Sequelize.Options;
 
@@ -27,8 +29,23 @@ export class TimerRepository implements ITimerRepository {
   }
 
   public async initialize(): Promise<void> {
+    logger.verbose('Initializing Sequelize connection and loading models...');
+    const connectionAlreadyEstablished: boolean = this._sequelize !== undefined;
+    if (connectionAlreadyEstablished) {
+      logger.verbose('Repository already initialized. Done.');
+
+      return;
+    }
     this._sequelize = await this._connectionManager.getConnection(this.config);
     this._timerModel = await loadModels(this._sequelize);
+    logger.verbose('Done.');
+  }
+
+  public async dispose(): Promise<void> {
+    logger.verbose('Disposing connection');
+    await this._connectionManager.destroyConnection(this.config);
+    this._sequelize = undefined;
+    logger.verbose('Done.');
   }
 
   public async getAll(): Promise<Array<Timer>> {
